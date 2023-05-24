@@ -8,4 +8,6 @@ remappings = [
     "@connext/interfaces/=lib/interfaces/"
 ]
 
+fs_permissions = [{ access = "read", path = "./test/tree.json"}]
+
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
