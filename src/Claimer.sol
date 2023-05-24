@@ -17,7 +17,6 @@ import {Custodian} from "./Custodian.sol";
  * sends the claim to the desired contracts
  * 
  * TODO: custodian on mainnet or somewhere cheaper?
- * 
  */
 contract Claimer {
     // ========== Events ===========
@@ -89,7 +88,7 @@ contract Claimer {
         bytes32[] memory _proof
     ) public {
         // Verify the proof before sending onchain as a cost + time saving step
-        bytes32 leaf = keccak256(abi.encodePacked(msg.sender, DOMAIN, _amount));
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(msg.sender, DOMAIN, _amount))));
         if (!MerkleProof.verify(_proof, CLAIM_ROOT, leaf)) {
             revert Claimer__initiateClaim_invalidProof();
         }

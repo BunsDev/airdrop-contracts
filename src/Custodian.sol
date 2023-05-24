@@ -253,7 +253,7 @@ contract Custodian is Ownable2Step, IXReceiver {
      */
     function _validateClaim(address _claimant, uint32 _claimantDomain, uint256 _amount, bytes32[] memory _proof) internal {
         // Create the leaf
-        bytes32 leaf = keccak256(abi.encodePacked(_claimant, _claimantDomain, _amount));
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(_claimant, _claimantDomain, _amount))));
 
         // Sanity check: not spent
         if (spentAddresses[_claimant]) {
