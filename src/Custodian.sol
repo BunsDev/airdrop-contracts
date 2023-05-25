@@ -130,6 +130,10 @@ contract Custodian is Ownable2Step, IXReceiver {
         CLAIMER = _claimer;
         CLAIM_ROOT = _claimRoot;
         CLAWBACK_START = block.timestamp + _clawbackDelay;
+
+        // Allow infinite approval to connext rather than approving on
+        // each claim
+        IERC20(CLAIM_ASSET).approve(CONNEXT, 2**256 - 1);
     }
 
     // ========== Admin Methods ===========
@@ -258,13 +262,13 @@ contract Custodian is Ownable2Step, IXReceiver {
      * @param _proof The merkle proof
      */
     function _validateClaim(address _claimant, uint32 _claimantDomain, uint256 _amount, bytes32[] memory _proof) internal {
-        // Create the leaf
-        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(_claimant, _claimantDomain, _amount))));
-
         // Sanity check: not spent
         if (spentAddresses[_claimant]) {
             revert Custodian__validateClaim_alreadyClaimed(_claimant);
         }
+
+        // Create the leaf
+        bytes32 leaf = keccak256(bytes.concat(keccak256(abi.encode(_claimant, _claimantDomain, _amount))));
 
         // Verify the claim
         if (!MerkleProof.verify(_proof, CLAIM_ROOT, leaf)) {
