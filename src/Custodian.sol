@@ -38,6 +38,12 @@ contract Custodian is Ownable2Step, IXReceiver {
      */
     event ClaimDisbursed(bytes32 indexed disburseId, bytes32 indexed initiateId, address indexed recipient, uint32 recipientDomain, uint256 amount);
 
+    /**
+     * @notice Emitted when a claim is validated to be truthful
+     * @param claimant Person claiming funds
+     * @param claimantDomain Chain claimant was active on
+     * @param amount Amount of claim
+     */
     event ClaimValidated(address indexed claimant, uint32 indexed claimantDomain, uint256 amount);
 
     // ========== Errors ===========
@@ -46,7 +52,7 @@ contract Custodian is Ownable2Step, IXReceiver {
     error Custodian__onlyClaimer_notClamer(address claimer);
     error Custodian__clawback_delayNotElapsed();
     error Custodian__claimBySignature_invalidSigner(address recovered, address expected);
-    error Custodian__xReceive_alreadyClaimed(address claimaint);
+    error Custodian__validateClaim_alreadyClaimed(address claimaint);
     error Custodian__validateClaim_invalidProof();
 
     // ========== Storage ===========
@@ -257,7 +263,7 @@ contract Custodian is Ownable2Step, IXReceiver {
 
         // Sanity check: not spent
         if (spentAddresses[_claimant]) {
-            revert Custodian__xReceive_alreadyClaimed(_claimant);
+            revert Custodian__validateClaim_alreadyClaimed(_claimant);
         }
 
         // Verify the claim
@@ -288,7 +294,7 @@ contract Custodian is Ownable2Step, IXReceiver {
             IERC20(CLAIM_ASSET).transfer(_recipient, _amount);
         } else {
             // Forward via crosschain transfer
-            IConnext(CONNEXT).xcall(
+            disburseId = IConnext(CONNEXT).xcall(
                 _recipientDomain, // destination domain
                 _recipient, // to
                 CLAIM_ASSET, // asset
