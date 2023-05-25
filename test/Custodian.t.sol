@@ -69,6 +69,9 @@ contract CustodianTest is Helper {
         // load claimant mapping
         _loadClaimants();
 
+        // mock approval
+        vm.mockCall(claimAsset, 0, abi.encodeWithSelector(IERC20.approve.selector, _connext, 2**256 - 1), abi.encode(true));
+
         // deploy custodian
         custodian = new CustodianHelper(owner, claimAsset, _connext, claimer, _root, clawbackDelay);
 
