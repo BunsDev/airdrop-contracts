@@ -75,10 +75,17 @@ contract Helper is Test {
     
     bytes32 _root;
 
+    address _claimant;
+    uint32 _domain;
+    uint256 _amount;
+    bytes32[] _proof;
+
+    mapping(address => uint256) _claimantKeys;
+
     // ========== Utilities ===========
-    function _loadConnext(uint32 _domain) internal {
+    function _loadConnext(uint32 domain_) internal {
         // Make sure that connext returns domain
-        _connext = address(new MockConnext(_domain == 0 ? 9991 : _domain));
+        _connext = address(new MockConnext(domain_ == 0 ? 9991 : domain_));
     }
     function _loadConnext() internal {
         _loadConnext(0);
@@ -103,6 +110,12 @@ contract Helper is Test {
         _root = json.readBytes32(".root");
     }
 
+    function _loadLeaf() internal {
+        _loadLeaf(1);
+    }
+    function _loadLeaf(uint256 index) internal {
+        (_claimant, _domain, _amount) = _getLeaf(index);
+    }
     function _getLeaf(uint256 index) internal returns (address, uint32, uint256) {
         // load json
         string memory json = _loadJson();
@@ -120,6 +133,24 @@ contract Helper is Test {
         return (claimant, domain, amount);
     }
 
+    function _loadClaimants() internal {
+        // load json
+        string memory json = _loadJson();
+
+        address[] memory claimants = json.readAddressArray(".claimants");
+        uint256[] memory keys = json.readUintArray(".keys");
+
+        for (uint256 i; i < claimants.length; i++) {
+            _claimantKeys[claimants[i]] = keys[i];
+        }
+    }
+
+    function _loadProof() internal {
+        _loadProof(1);
+    }
+    function _loadProof(uint256 index) internal {
+        _proof = _getProof(index);
+    }
     function _getProof(uint256 index) internal returns (bytes32[] memory) {
         // load json
         string memory json = _loadJson();
@@ -147,15 +178,15 @@ contract Helper is Test {
 
 // // (1) address-domain-amount
 // const allocations = 50;
-// const addresses = Array(allocations).fill(0).map(_ => Wallet.createRandom().address);
+// const wallets = Array(allocations).fill(0).map(_ => Wallet.createRandom());
 // const amounts = Array(allocations).fill(0).map(_ => parseEther(Math.floor(Math.random() * 10).toString()).toString());
 // // [mumbai, goerli, opt-goerli, arb-goerli, zksync, linea, polygon zkevm]
 // const domains = [9991, 1735353714, 1735356532, 1734439522, 2053862260, 1668247156, 1887071092];
 
 // // leaves should include some duplicates with different chains
-// const leaves: [string, number, string][] = addresses.map((address, index) => {
+// const leaves: [string, number, string][] = wallets.map((wallet, index) => {
 //     const domain = domains[Math.floor(Math.random() * domains.length)];
-//     return [address, domain, amounts[index]];
+//     return [wallet.address, domain, amounts[index]];
 // });
 
 // // Add in some duplicate addresses with different domains
@@ -181,5 +212,16 @@ contract Helper is Test {
 //     leaves: values,
 //     proofs: values.map((leaf) => tree.getProof(leaf.value)),
 //     tree: recorded,
+//     claimants: wallets.map(w => w.address),
+//     keys: wallets.map(w => w.privateKey),
 // };
+
+// // test -- can verify leaves with proof
+// const provable = output.leaves.every((leaf, index) => {
+//     return tree.verify(leaf.value, output.proofs[index]);
+// });
+// if (!provable) {
+//     throw new Error(`Invalid proof for leaf ${JSON.stringify(output.leaves)}`);
+// }
+
 // writeFileSync("tree.json", JSON.stringify(output));

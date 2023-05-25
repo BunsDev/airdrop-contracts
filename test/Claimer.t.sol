@@ -9,11 +9,6 @@ contract ClaimerTest is Helper {
     event ClaimInitiated(bytes32 indexed id, address indexed claimant, uint256 amount);
 
     // ========== Storage ===========
-    address claimant;
-    uint32 domain;
-    uint256 amount;
-    bytes32[] proof;
-
     Claimer claimer;
 
     address custodian = address(456456456);
@@ -25,13 +20,13 @@ contract ClaimerTest is Helper {
         _loadRoot();
 
         // get the leaf info
-        (claimant, domain, amount) = _getLeaf(1);
+        _loadLeaf();
 
         // get the proof
-        proof = _getProof(1);
+        _loadProof();
 
         // set connext
-        _loadConnext(domain);
+        _loadConnext(_domain);
 
         // deploy claimer
         claimer = new Claimer(custodian, custodianDomain, _connext, _root);
@@ -41,11 +36,11 @@ contract ClaimerTest is Helper {
     function test_initiateClaim__shouldRevertIfInvalidProof() public {
         // initiate claim
         vm.expectRevert(Claimer.Claimer__initiateClaim_invalidProof.selector);
-        claimer.initiateClaim(amount, proof);
+        claimer.initiateClaim(_amount, _proof);
     }
 
     function test_initiateClaim__shouldWork() public {
-        bytes memory xcallData = abi.encodePacked(claimant, claimer.DOMAIN(), amount, proof);
+        bytes memory xcallData = abi.encodePacked(_claimant, claimer.DOMAIN(), _amount, _proof);
         // assert the emission
         vm.expectEmit(_connext);
         emit XCalled(
@@ -62,21 +57,21 @@ contract ClaimerTest is Helper {
         vm.expectEmit(address(claimer));
         emit ClaimInitiated(
             keccak256(abi.encode(custodianDomain, custodian, address(0), address(0), 0, 0, xcallData)),
-            claimant,
-            amount
+            _claimant,
+            _amount
         );
 
         // initiate claim
-        vm.prank(claimant);
-        claimer.initiateClaim(amount, proof);
+        vm.prank(_claimant);
+        claimer.initiateClaim(_amount, _proof);
     }
 
     function test_initiateClaim__shouldWorkWithoutCrosschain() public {
         // deploy claimer with same domain as leaf
-        claimer = new Claimer(custodian, domain, _connext, _root);
+        claimer = new Claimer(custodian, _domain, _connext, _root);
 
         // set custodian mock
-        bytes memory expectedCall = abi.encodeWithSelector(Custodian.claimBySender.selector, claimant, amount, proof);
+        bytes memory expectedCall = abi.encodeWithSelector(Custodian.claimBySender.selector, _claimant, _amount, _proof);
         vm.mockCall(custodian, expectedCall, abi.encode(true));
 
         // assert the call to the custodian directly
@@ -84,10 +79,10 @@ contract ClaimerTest is Helper {
 
         // expect event
         vm.expectEmit(address(claimer));
-        emit ClaimInitiated(bytes32(0), claimant, amount);
+        emit ClaimInitiated(bytes32(0), _claimant, _amount);
 
         // initiate claim
-        vm.prank(claimant);
-        claimer.initiateClaim(amount, proof);
+        vm.prank(_claimant);
+        claimer.initiateClaim(_amount, _proof);
     }
 }
