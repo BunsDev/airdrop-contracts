@@ -88,7 +88,7 @@ abstract contract TokenTimelock is ITokenTimelock, Timed {
 
     /// @notice amount of tokens released to beneficiary
     function alreadyReleasedAmount() public view override returns (uint256) {
-        return initialBalance - totalToken();
+        return initialBalance == 0 ? 0 : initialBalance - totalToken();
     }
 
     /// @notice amount of held tokens unlocked and available for release
