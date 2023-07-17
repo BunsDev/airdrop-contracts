@@ -6,6 +6,7 @@ fs_permissions = [
     { access = "read", path = "./beneficiaries.json" },
     { access = "write", path = "./timelocks.json" }
 ]
+solc = "0.8.19"
 
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
