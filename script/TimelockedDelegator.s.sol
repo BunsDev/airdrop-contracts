@@ -14,7 +14,7 @@ import {RpcLookup} from "./utils/RpcLookup.sol";
 import "forge-std/Script.sol";
 import "forge-std/Script.sol";
 
-contract TimelockDelegatorDeploy is Script {
+contract TimelockedDelegatorDeploy is Script {
     // ============ Libraries ============
     using stdJson for string;
     using Strings for string;
