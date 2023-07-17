@@ -1,0 +1,16 @@
+[
+    {
+        "beneficiary": "0x18EdaEc676341D63d7087D0d999cF1f1a56d565A",
+        "amount": 10,
+        "startTime": 1689123,
+        "cliffDuration": 300,
+        "duration": 600
+    },
+    {
+        "beneficiary": "0x18EdaEc676341D63d7087D0d999cF1f1a56d565A",
+        "amount": 10,
+        "startTime": 1689823,
+        "cliffDuration": 300,
+        "duration": 600
+    }
+]
