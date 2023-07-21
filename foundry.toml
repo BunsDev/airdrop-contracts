@@ -2,12 +2,41 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+fs_permissions = [
+    { access = "read", path = "./beneficiaries.json" },
+    { access = "write", path = "./timelocks.json" }
+]
+solc = "0.8.19"
 
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
     "@connext/interfaces/=lib/interfaces/"
 ]
 
-fs_permissions = [{ access = "read", path = "./test/tree.json"}]
+[rpc_endpoints]
+mainnet = "${MAINNET_RPC_URL}"
+bnb = "${BNB_RPC_URL}"
+gnosis = "${GNOSIS_RPC_URL}"
+optimism = "${OPTIMISM_RPC_URL}"
+arbitrum = "${ARBITRUM_RPC_URL}"
+polygon = "${POLYGON_RPC_URL}"
+
+goerli = "${GOERLI_RPC_URL}"
+arbitrum-goerli = "${ARBITRUM_GOERLI_RPC_URL}"
+optimism-goerli = "${OPTIMISM_GOERLI_RPC_URL}"
+mumbai = "${MUMBAI_RPC_URL}"
+
+[etherscan]
+mainnet = { key = "${ETHERSCAN_API_KEY}" }
+bnb = { key = "${BNBSCAN_API_KEY}", url = "https://api.bscscan.com/api" }
+gnosis = { key = "${GNOSISSCAN_API_KEY}", url = "https://api.gnosisscan.io" }
+optimism = { key = "${OPTIMISM_ETHERSCAN_API_KEY}", url = "https://api-optimistic.etherscan.io/api" }
+arbitrum = { key = "${ARBISCAN_API_KEY}", url = "https://api.arbiscan.io/" }
+polygon = { key = "${POLYGONSCAN_API_KEY}", url = "https://api.polygonscan.com/api" }
+
+goerli = { key = "${ETHERSCAN_API_KEY}", url = "https://api-goerli.etherscan.io/api" }
+arbitrum-goerli = { key = "${ARBITRUM_GOERLI_RPC_URL}", url = "https://api-goerli.arbiscan.io/" }
+optimism-goerli = { key = "${OPTIMISM_ETHERSCAN_API_KEY}", url = "https://api-goerli-optimistic.etherscan.io/api" }
+mumbai = { key = "${POLYGONSCAN_API_KEY}", url = "https://api-testnet.polygonscan.com/api" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
