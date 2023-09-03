@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import {Ownable} from "@openzeppelin/access/Ownable.sol";
-import {ITimelockedDelegator, IDelegatable} from "./interfaces/ITimelockedDelegator.sol";
+import {ITimelockedDelegator, IDelegatable} from "./interface/ITimelockedDelegator.sol";
 import {LinearTokenTimelock} from "./LinearTokenTimelock.sol";
 
 /// @title a proxy delegate contract for token
@@ -10,7 +10,7 @@ import {LinearTokenTimelock} from "./LinearTokenTimelock.sol";
 ///         https://github.com/fei-protocol/fei-protocol-core/blob/develop/contracts/timelocks/LinearTimelockedDelegator.sol
 /// @dev https://eips.ethereum.org/EIPS/eip-4758 -> inclusion seems likely within
 ///      the next 4 years, so selfdestruct was removed from withdraw()
-/// @dev 
+/// @dev
 contract Delegatee is Ownable {
     IDelegatable public token;
 

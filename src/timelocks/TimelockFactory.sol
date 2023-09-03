@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
-import { CREATE3 } from "solmate/utils/CREATE3.sol";
+import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
+import {CREATE3} from "solmate/utils/CREATE3.sol";
 
-import { TimelockedDelegator } from "./TimelockedDelegator.sol";
+import {TimelockedDelegator} from "./TimelockedDelegator.sol";
 
 contract TimelockFactory {
-
     // ============ events ============
     event TimelockDeployed(
         address indexed timelock,
@@ -80,5 +79,4 @@ contract TimelockFactory {
             abi.encode(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration)
         );
     }
-
 }

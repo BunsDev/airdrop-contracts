@@ -6,10 +6,10 @@ export type TimelockFileConfig = {
     startTime: string;
     duration: string;
     funding?: string;
-}
+};
 
 export const readBeneficiaries = (file: string): TimelockFileConfig[] => {
-    return readCsvSync<TimelockFileConfig>(file)
+    return readCsvSync<TimelockFileConfig>(file);
 };
 
 const readCsvSync = <T extends object>(file: string): T[] => {
@@ -19,11 +19,11 @@ const readCsvSync = <T extends object>(file: string): T[] => {
     const keys = headerLine.split(",");
     const ret = records.map((line, idx) => {
         const entry = {} as any;
-        const values = line.split(",")
+        const values = line.split(",");
         keys.forEach((key, i) => {
-            entry[key] = values[i]
-        })
+            entry[key] = values[i];
+        });
         return entry;
-    })
+    });
     return ret;
-}
+};

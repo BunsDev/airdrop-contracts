@@ -7,7 +7,7 @@ pragma solidity 0.8.19;
 // Reference: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/TokenTimelock.sol
 
 import {Timed} from "./Timed.sol";
-import {ITokenTimelock, IERC20} from "./interfaces/ITokenTimelock.sol";
+import {ITokenTimelock, IERC20} from "./interface/ITokenTimelock.sol";
 
 abstract contract TokenTimelock is ITokenTimelock, Timed {
     /// @notice ERC20 basic token contract being held in timelock
