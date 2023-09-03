@@ -28,6 +28,8 @@ const func: DeployFunction = async (
     const chain = +(await hre.getChainId());
     const config = getConfig(chain);
 
+    const submit = process.env.SUBMIT === "true";
+
     // Parse the csv
     const toDeploy = readBeneficiaries(config.file);
 
@@ -52,7 +54,7 @@ const func: DeployFunction = async (
             .getFunction("approve")
             .populateTransaction(factoryDeployment.address, sum - allowance);
 
-        if (process.env.SUBMIT) {
+        if (submit) {
             const tx = await deployer.sendTransaction(populated);
             console.log("submitted approve tx:", tx.hash);
             const receipt = await tx.wait();
@@ -77,7 +79,7 @@ const func: DeployFunction = async (
                 funding ?? "0",
             );
 
-        if (process.env.SUBMIT) {
+        if (submit) {
             const tx = await deployer.sendTransaction(populated);
             console.log("submitted deploy tx:", tx.hash);
             const receipt = await tx.wait();
