@@ -7,35 +7,35 @@ import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 /// @author Fei Protocol
 /// @dev Modified from: https://github.com/fei-protocol/fei-protocol-core/blob/develop/contracts/timelocks/ITokenTimelock.sol
 interface ITokenTimelock {
-    // ----------- Events -----------
+  // ----------- Events -----------
 
-    event Release(address indexed _beneficiary, address indexed _recipient, uint256 _amount);
-    event BeneficiaryUpdate(address indexed _beneficiary);
-    event PendingBeneficiaryUpdate(address indexed _pendingBeneficiary);
+  event Release(address indexed _beneficiary, address indexed _recipient, uint256 _amount);
+  event BeneficiaryUpdate(address indexed _beneficiary);
+  event PendingBeneficiaryUpdate(address indexed _pendingBeneficiary);
 
-    // ----------- State changing api -----------
+  // ----------- State changing api -----------
 
-    function release(address to, uint256 amount) external;
+  function release(address to, uint256 amount) external;
 
-    function releaseMax(address to) external;
+  function releaseMax(address to) external;
 
-    function setPendingBeneficiary(address _pendingBeneficiary) external;
+  function setPendingBeneficiary(address _pendingBeneficiary) external;
 
-    function acceptBeneficiary() external;
+  function acceptBeneficiary() external;
 
-    // ----------- Getters -----------
+  // ----------- Getters -----------
 
-    function lockedToken() external view returns (IERC20);
+  function lockedToken() external view returns (IERC20);
 
-    function beneficiary() external view returns (address);
+  function beneficiary() external view returns (address);
 
-    function pendingBeneficiary() external view returns (address);
+  function pendingBeneficiary() external view returns (address);
 
-    function initialBalance() external view returns (uint256);
+  function initialBalance() external view returns (uint256);
 
-    function availableForRelease() external view returns (uint256);
+  function availableForRelease() external view returns (uint256);
 
-    function totalToken() external view returns (uint256);
+  function totalToken() external view returns (uint256);
 
-    function alreadyReleasedAmount() external view returns (uint256);
+  function alreadyReleasedAmount() external view returns (uint256);
 }

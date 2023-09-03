@@ -7,14 +7,14 @@ import { DeployFunction } from "hardhat-deploy/types";
  * @param hre Hardhat environment to deploy to
  */
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment): Promise<void> => {
-    console.log("\n============================= Exporting + Verifying Deployments ===============================");
-    await hre.run("export", {
-        exportAll: "./deployments.json",
-    });
+  console.log("\n============================= Exporting + Verifying Deployments ===============================");
+  await hre.run("export", {
+    exportAll: "./deployments.json",
+  });
 
-    await hre.run("etherscan-verify", {
-        solcInput: true,
-    });
+  await hre.run("etherscan-verify", {
+    solcInput: true,
+  });
 };
 
 export default func;

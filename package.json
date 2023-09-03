@@ -1,55 +1,55 @@
 {
-    "name": "airdrop-contracts",
-    "version": "0.0.1",
-    "description": "Holds the contracts to support the Connext airdrop.",
-    "main": "index.js",
-    "directories": {
-        "lib": "lib",
-        "test": "test"
-    },
-    "scripts": {
-        "test": "forge test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/connext/airdrop-contracts.git"
-    },
-    "author": "Connext",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/connext/airdrop-contracts/issues"
-    },
-    "homepage": "https://github.com/connext/airdrop-contracts#readme",
-    "devDependencies": {
-        "@nomicfoundation/hardhat-ethers": "3.0.2",
-        "@nomicfoundation/hardhat-foundry": "1.1.1",
-        "@nomicfoundation/hardhat-verify": "1.1.1",
-        "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
-        "@nomiclabs/hardhat-etherscan": "3.1.7",
-        "@openzeppelin/contracts": "4.8.2",
-        "@types/command-line-args": "5.2.0",
-        "@types/node": "18.15.11",
-        "@typescript-eslint/eslint-plugin": "5.57.1",
-        "@typescript-eslint/parser": "5.57.1",
-        "command-line-args": "5.2.1",
-        "dotenv": "16.0.3",
-        "eslint": "8.37.0",
-        "eslint-config-prettier": "8.8.0",
-        "eslint-config-standard": "17.0.0",
-        "eslint-plugin-import": "2.27.5",
-        "eslint-plugin-node": "11.1.0",
-        "eslint-plugin-prettier": "4.2.1",
-        "eslint-plugin-promise": "6.1.1",
-        "ethers": "^6.7.1",
-        "hardhat": "2.17.2",
-        "hardhat-deploy": "0.11.34",
-        "hardhat-deploy-ethers": "0.4.1",
-        "hardhat-preprocessor": "^0.1.5",
-        "prettier": "2.8.7",
-        "prettier-plugin-solidity": "1.1.3",
-        "solhint": "3.4.1",
-        "ts-node": "10.9.1",
-        "typescript": "5.0.3"
-    },
-    "dependencies": {}
+  "name": "airdrop-contracts",
+  "version": "0.0.1",
+  "description": "Holds the contracts to support the Connext airdrop.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "forge test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connext/airdrop-contracts.git"
+  },
+  "author": "Connext",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/connext/airdrop-contracts/issues"
+  },
+  "homepage": "https://github.com/connext/airdrop-contracts#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "3.0.2",
+    "@nomicfoundation/hardhat-foundry": "1.1.1",
+    "@nomicfoundation/hardhat-verify": "1.1.1",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@nomiclabs/hardhat-etherscan": "3.1.7",
+    "@openzeppelin/contracts": "4.8.2",
+    "@types/command-line-args": "5.2.0",
+    "@types/node": "18.15.11",
+    "@typescript-eslint/eslint-plugin": "5.57.1",
+    "@typescript-eslint/parser": "5.57.1",
+    "command-line-args": "5.2.1",
+    "dotenv": "16.0.3",
+    "eslint": "8.37.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-config-standard": "17.0.0",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-promise": "6.1.1",
+    "ethers": "^6.7.1",
+    "hardhat": "2.17.2",
+    "hardhat-deploy": "0.11.34",
+    "hardhat-deploy-ethers": "0.4.1",
+    "hardhat-preprocessor": "^0.1.5",
+    "prettier": "2.8.7",
+    "prettier-plugin-solidity": "1.1.3",
+    "solhint": "3.4.1",
+    "ts-node": "10.9.1",
+    "typescript": "5.0.3"
+  },
+  "dependencies": {}
 }
