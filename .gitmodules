@@ -7,3 +7,6 @@
 [submodule "lib/interfaces"]
 	path = lib/interfaces
 	url = https://github.com/connext/interfaces
+[submodule "lib/solmate"]
+	path = lib/solmate
+	url = https://github.com/transmissions11/solmate
