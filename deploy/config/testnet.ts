@@ -1,5 +1,5 @@
 export const TESTNET_CONFIG = {
-  file: "./beneficiaries.testnet.csv",
+  file: "./beneficiaries-testnet.csv",
   timelocks: {
     5: {
       token: "0x61E0589e12395c06F6A72e5B31f803e47185FC81",
