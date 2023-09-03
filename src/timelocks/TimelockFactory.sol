@@ -44,12 +44,12 @@ contract TimelockFactory {
     uint256 _duration,
     uint256 _amount,
     uint256 _funding
-  ) public {
-    address deployed = _deployTimelock(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration, _amount);
+  ) public returns (address _deployed) {
+    _deployed = _deployTimelock(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration, _amount);
 
     if (_funding > 0) {
       // fund timelock
-      IERC20(_token).transferFrom(msg.sender, deployed, _funding);
+      IERC20(_token).transferFrom(msg.sender, _deployed, _funding);
     }
   }
 
@@ -90,8 +90,9 @@ contract TimelockFactory {
     bytes32 salt = _getSalt(_token, _beneficiary, msg.sender, _startTime, _amount);
 
     // Get bytecode
+    bytes memory creation = type(TimelockedDelegator).creationCode;
     bytes memory bytecode = abi.encodePacked(
-      type(TimelockedDelegator).creationCode,
+      creation,
       abi.encode(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration)
     );
 
