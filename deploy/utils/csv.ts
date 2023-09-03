@@ -5,7 +5,7 @@ export type TimelockFileConfig = {
   cliffDuration: string;
   startTime: string;
   duration: string;
-  funding?: string;
+  amount: string;
 };
 
 export const readBeneficiaries = (file: string): TimelockFileConfig[] => {

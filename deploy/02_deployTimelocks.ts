@@ -29,6 +29,7 @@ const func: DeployFunction = async (
     console.log("deployer", deployer.address);
 
     const submit = process.env.SUBMIT === "true";
+    const fundOnDeploy = process.env.FUND_ON_DEPLOY === "true";
 
     // Parse the csv
     const toDeploy = readBeneficiaries(config.file);
@@ -50,11 +51,10 @@ const func: DeployFunction = async (
     const factory = (await hre.ethers.getContractAt("TimelockFactory", factoryDeployment.address)).connect(deployer);
 
     // Approve the factory for the sum of all funding
-    const sum = toDeploy.reduce((acc, { funding }) => acc + BigInt(funding ?? 0), 0n);
+    const sum = toDeploy.reduce((acc, { amount }) => acc + BigInt(amount), 0n);
 
     const token = (await hre.ethers.getContractAt(ERC20ABI, config.timelocks[chain].token)).connect(deployer);
     const args = [deployer.address, await factory.getAddress()]
-    console.log("args", args)
     const allowance = await token.getFunction("allowance").staticCall(...args);
     if (allowance < sum) {
         // Approve the factory for the sum of all funding
@@ -74,7 +74,7 @@ const func: DeployFunction = async (
     }
 
     // Deploy the factories
-    for (const { beneficiary, cliffDuration, duration, startTime, funding } of toDeploy) {
+    for (const { beneficiary, cliffDuration, duration, startTime, amount } of toDeploy) {
         // TODO: check if already deployed to prevent failures
         const populated = await factory
             .getFunction("deployTimelock")
@@ -85,7 +85,8 @@ const func: DeployFunction = async (
                 cliffDuration,
                 startTime,
                 duration,
-                funding ?? "0",
+                amount,
+                fundOnDeploy ? amount : 0n,
             );
 
         if (submit) {

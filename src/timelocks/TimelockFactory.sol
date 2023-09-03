@@ -20,6 +20,21 @@ contract TimelockFactory {
 
   // ============ public functions ============
 
+  /**
+   * @notice Deploys a LineatTokenTimelock with create3.
+   * 
+   * @dev Salt generated from token, beneficiary, amount, and deployer.
+   * @dev Funding is optional. If funding is provided, the timelock will be funded with the funding amount.
+   * 
+   * @param _token Token to unlock
+   * @param _beneficiary Unlocking address
+   * @param _admin Clawback admin
+   * @param _cliffDuration Duration of cliff in seconds
+   * @param _startTime Unlock start time in seconds
+   * @param _duration Duration of the unlock schedule in seconds
+   * @param _amount The amount to unlock
+   * @param _funding The initial funding amount
+   */
   function deployTimelock(
     address _token,
     address _beneficiary,
@@ -27,14 +42,38 @@ contract TimelockFactory {
     uint256 _cliffDuration,
     uint256 _startTime,
     uint256 _duration,
+    uint256 _amount,
     uint256 _funding
   ) public {
-    address deployed = _deployTimelock(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration);
+    address deployed = _deployTimelock(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration, _amount);
 
     if (_funding > 0) {
       // fund timelock
       IERC20(_token).transferFrom(msg.sender, deployed, _funding);
     }
+  }
+
+  /**
+   * @notice Computes the address of a timelock contract.
+   * 
+   * @param _deployer The address that will deploy the contract
+   * @param _token The token to unlock
+   * @param _beneficiary The address that will claim unlocks
+   * @param _startTime The start time
+   * @param _amount The amount to unlock
+   */
+  function computeTimelockAddress(
+    address _deployer,
+    address _token,
+    address _beneficiary,
+    uint256 _startTime,
+    uint256 _amount
+  ) public view returns (address _computed) {
+    // Get salt
+    bytes32 salt = _getSalt(_token, _beneficiary, _deployer, _startTime, _amount);
+
+    // Deploy timelock
+    _computed = CREATE3.getDeployed(salt);
   }
 
   // ============ internal functions ============
@@ -44,13 +83,17 @@ contract TimelockFactory {
     address _admin,
     uint256 _cliffDuration,
     uint256 _startTime,
-    uint256 _duration
+    uint256 _duration,
+    uint256 _amount
   ) internal returns (address _deployed) {
     // Get salt
-    bytes32 salt = _getSalt(_token, _beneficiary, _admin, msg.sender);
+    bytes32 salt = _getSalt(_token, _beneficiary, msg.sender, _startTime, _amount);
 
     // Get bytecode
-    bytes memory bytecode = _getBytecode(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration);
+    bytes memory bytecode = abi.encodePacked(
+      type(TimelockedDelegator).creationCode,
+      abi.encode(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration)
+    );
 
     // Deploy timelock
     _deployed = CREATE3.deploy(salt, bytecode, 0);
@@ -60,23 +103,11 @@ contract TimelockFactory {
   function _getSalt(
     address _token,
     address _beneficiary,
-    address _admin,
-    address _deployer
+    address _deployer,
+    uint256 _startTime,
+    uint256 _amount
   ) internal pure returns (bytes32 _salt) {
-    _salt = keccak256(abi.encodePacked(_token, _beneficiary, _admin, _deployer));
+    _salt = keccak256(abi.encodePacked(_token, _beneficiary, _deployer, _startTime, _amount));
   }
 
-  function _getBytecode(
-    address _token,
-    address _beneficiary,
-    address _admin,
-    uint256 _cliffDuration,
-    uint256 _startTime,
-    uint256 _duration
-  ) internal pure returns (bytes memory _bytecode) {
-    _bytecode = abi.encodePacked(
-      type(TimelockedDelegator).creationCode,
-      abi.encode(_token, _beneficiary, _admin, _cliffDuration, _startTime, _duration)
-    );
-  }
 }
