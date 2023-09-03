@@ -10,7 +10,8 @@ solc = "0.8.19"
 
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
-    "@connext/interfaces/=lib/interfaces/"
+    "@connext/interfaces/=lib/interfaces/",
+    "solmate/=lib/solmate/src/"
 ]
 
 [rpc_endpoints]

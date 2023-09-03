@@ -1,0 +1,33 @@
+{
+  "name": "airdrop-contracts",
+  "version": "0.0.1",
+  "description": "Holds the contracts to support the Connext airdrop.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "forge test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connext/airdrop-contracts.git"
+  },
+  "author": "Connext",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/connext/airdrop-contracts/issues"
+  },
+  "homepage": "https://github.com/connext/airdrop-contracts#readme",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "2.2.3",
+    "@nomiclabs/hardhat-etherscan": "3.1.7",
+    "dotenv": "16.3.1",
+    "ethers": "6.7.1",
+    "hardhat": "2.17.2",
+    "hardhat-deploy": "0.11.37",
+    "hardhat-preprocessor": "0.1.5",
+    "ts-node": "10.9.1"
+  }
+}
