@@ -9,7 +9,7 @@ import { ERC20ABI, readBeneficiaries } from "./utils";
 dotenvConfig();
 
 const date = new Date();
-const FILE = `./transactions-${Math.floor(date.getTime() / 1000)}.json`;
+const SAFE_FILE = `./transactions-${Math.floor(date.getTime() / 1000)}.json`;
 
 const func: DeployFunction = async (
     hre: HardhatRuntimeEnvironment & { deployments: DeploymentsExtension },
@@ -32,7 +32,7 @@ const func: DeployFunction = async (
     const toDeploy = readBeneficiaries(config.file);
 
     // Create the tx write stream
-    const stream = createWriteStream(FILE, { flags: "a" });
+    const stream = createWriteStream(SAFE_FILE);
 
     // Get the factory
     const factoryDeployment = await hre.deployments.getOrNull("TimelockFactory");
