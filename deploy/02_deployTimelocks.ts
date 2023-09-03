@@ -1,7 +1,6 @@
-import { createWriteStream } from "fs";
+import { createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction, DeploymentsExtension } from "hardhat-deploy/types";
-import { Wallet } from "ethers";
 import { config as dotenvConfig } from "dotenv";
 import { getConfig } from "./config";
 import { ERC20ABI, readBeneficiaries } from "./utils";
@@ -9,17 +8,17 @@ import { ERC20ABI, readBeneficiaries } from "./utils";
 dotenvConfig();
 
 const date = new Date();
-const SAFE_FILE = `./transactions-${Math.floor(date.getTime() / 1000)}.json`;
+const SAFE_PARENT_DIR = './safe';
+const SAFE_FILE_SUFFIX = `transactions-${Math.floor(date.getTime() / 1000)}.json`;
 
 const func: DeployFunction = async (
     hre: HardhatRuntimeEnvironment & { deployments: DeploymentsExtension },
 ): Promise<void> => {
-    let _deployer;
-    ({ deployer: _deployer } = await hre.getNamedAccounts());
-    if (!_deployer) {
-        [_deployer] = await hre.getUnnamedAccounts();
+    let deployer;
+    ({ deployer } = await hre.ethers.getNamedSigners());
+    if (!deployer) {
+        [deployer] = await hre.ethers.getUnnamedSigners();
     }
-    const deployer = _deployer as unknown as Wallet;
     console.log(
         "\n============================= Deploying TimelockedDelegator Contracts ===============================",
     );
@@ -27,14 +26,21 @@ const func: DeployFunction = async (
     // Get the config
     const chain = +(await hre.getChainId());
     const config = getConfig(chain);
+    console.log("deployer", deployer.address);
 
     const submit = process.env.SUBMIT === "true";
 
     // Parse the csv
     const toDeploy = readBeneficiaries(config.file);
 
-    // Create the tx write stream
-    const stream = createWriteStream(SAFE_FILE);
+    // Create the safe dir
+    const dir = `${SAFE_PARENT_DIR}/${hre.network.name}`;
+    const file = `${dir}/${SAFE_FILE_SUFFIX}`;
+    if (!existsSync(dir)) {
+        mkdirSync(dir);
+    }
+
+    const toSubmit = [];
 
     // Get the factory
     const factoryDeployment = await hre.deployments.getOrNull("TimelockFactory");
@@ -47,7 +53,9 @@ const func: DeployFunction = async (
     const sum = toDeploy.reduce((acc, { funding }) => acc + BigInt(funding ?? 0), 0n);
 
     const token = (await hre.ethers.getContractAt(ERC20ABI, config.timelocks[chain].token)).connect(deployer);
-    const allowance = await token.getFunction("allowance").call(deployer.address, factoryDeployment.address);
+    const args = [deployer.address, await factory.getAddress()]
+    console.log("args", args)
+    const allowance = await token.getFunction("allowance").staticCall(...args);
     if (allowance < sum) {
         // Approve the factory for the sum of all funding
         const populated = await token
@@ -60,13 +68,14 @@ const func: DeployFunction = async (
             const receipt = await tx.wait();
             console.log("mined approve tx:", receipt?.hash);
         } else {
-            // Write the tx to a csv
-            stream.write(JSON.stringify({ to: populated.to, value: populated.value, data: populated.data }) + "\n");
+            // Write the tx to a json
+            toSubmit.push({ to: populated.to, value: populated.value, data: populated.data })
         }
     }
 
     // Deploy the factories
     for (const { beneficiary, cliffDuration, duration, startTime, funding } of toDeploy) {
+        // TODO: check if already deployed to prevent failures
         const populated = await factory
             .getFunction("deployTimelock")
             .populateTransaction(
@@ -98,13 +107,16 @@ const func: DeployFunction = async (
                 receipt: receipt as any,
             });
         } else {
-            // Write the tx to a csv
-            stream.write(JSON.stringify({ to: populated.to, value: populated.value, data: populated.data }) + "\n");
+            // Write the tx to a json
+            toSubmit.push({ to: populated.to, value: populated.value, data: populated.data })
         }
     }
 
-    // Close the stream
-    stream.close();
+    // Write file
+    writeFileSync(file, JSON.stringify(toSubmit, null, 2));
+    // Write latest
+    writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify(toSubmit, null, 2));
+
 };
 func.tags = ["timelocks", "testnet", "mainnet"];
 export default func;

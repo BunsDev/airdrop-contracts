@@ -11,6 +11,9 @@ node_modules/
 /broadcast/*/31337/
 /broadcast/**/dry-run/
 
+# Ignores safe logs
+/safe/
+
 # Docs
 docs/
 

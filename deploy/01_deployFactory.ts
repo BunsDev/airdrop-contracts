@@ -15,8 +15,14 @@ const func: DeployFunction = async (
   }
   const deployer = _deployer as unknown as Wallet;
   console.log("\n============================= Deploying TimelockFactory Contract ===============================");
+  const deployment = await hre.deployments.getOrNull("TimelockFactory");
+  if (deployment) {
+    console.log("factory already deployed:", deployment.address);
+    return;
+  }
 
-  // Deploy create3 factory
+
+  // Deploy factory
   console.log("deploying factory..");
   const { address, deploy } = await hre.deployments.deterministic("TimelockFactory", {
     from: deployer.address,
@@ -30,6 +36,7 @@ const func: DeployFunction = async (
     throw new Error(`Factory address mismatch: ${address} != ${factoryDeployment.address}`);
   }
   console.log("factory deployed:", factoryDeployment.address);
+
 };
 func.tags = ["factory", "testnet", "mainnet"];
 export default func;
