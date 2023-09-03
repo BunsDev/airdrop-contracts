@@ -1,6 +1,7 @@
 # Compiler files
 cache/
 out/
+dist/
 
 # Depedencies
 node_modules/
@@ -18,6 +19,8 @@ docs/
 
 # Config files
 beneficiaries.json
+beneficiaries.csv
+beneficiaries-testnet.csv
 
 node_modules
 .env
