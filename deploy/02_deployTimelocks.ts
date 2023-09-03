@@ -1,4 +1,4 @@
-import { createWriteStream, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction, DeploymentsExtension } from "hardhat-deploy/types";
 import { config as dotenvConfig } from "dotenv";
@@ -26,10 +26,12 @@ const func: DeployFunction = async (
     // Get the config
     const chain = +(await hre.getChainId());
     const config = getConfig(chain);
-    console.log("deployer", deployer.address);
 
     const submit = process.env.SUBMIT === "true";
     const fundOnDeploy = process.env.FUND_ON_DEPLOY === "true";
+    console.log("deployer:", deployer.address);
+    console.log("submit:", submit);
+    console.log("fundOnDeploy:", fundOnDeploy);
 
     // Parse the csv
     const toDeploy = readBeneficiaries(config.file);
