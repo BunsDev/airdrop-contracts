@@ -51,6 +51,7 @@ const func: DeployFunction = async (
         throw new Error(`Factory not deployed on chain ${chain}`);
     }
     const factory = (await hre.ethers.getContractAt("TimelockFactory", factoryDeployment.address)).connect(deployer);
+    console.log("factory:", factoryDeployment.address);
 
     // Approve the factory for the sum of all funding
     const sum = toDeploy.reduce((acc, { amount }) => acc + BigInt(amount), 0n);
@@ -58,12 +59,13 @@ const func: DeployFunction = async (
     const token = (await hre.ethers.getContractAt(ERC20ABI, config.timelocks[chain].token)).connect(deployer);
     const args = [deployer.address, await factory.getAddress()]
     const allowance = await token.getFunction("allowance").staticCall(...args);
-    if (allowance < sum) {
+    console.log("allowance:", allowance.toString());
+    console.log("sum:", sum.toString());
+    if (allowance < sum && fundOnDeploy) {
         // Approve the factory for the sum of all funding
         const populated = await token
             .getFunction("approve")
             .populateTransaction(factoryDeployment.address, sum - allowance);
-
         if (submit) {
             const tx = await deployer.sendTransaction(populated);
             console.log("submitted approve tx:", tx.hash);
@@ -77,18 +79,37 @@ const func: DeployFunction = async (
 
     // Deploy the factories
     for (const { beneficiary, cliffDuration, duration, startTime, amount } of toDeploy) {
-        // TODO: check if already deployed to prevent failures
+        // Get args
+        const args = [
+            config.timelocks[chain].token,
+            beneficiary,
+            config.timelocks[chain].admin,
+            cliffDuration,
+            startTime,
+            duration,
+            amount,
+            fundOnDeploy ? amount : 0n,
+        ]
+        // Calculate
+        const expected = await factory
+            .getFunction("computeTimelockAddress")
+            .staticCall(
+                deployer.address,
+                config.timelocks[chain].token,
+                beneficiary,
+                startTime,
+                amount
+            );
+        if (await deployer.provider.getCode(expected) !== "0x") {
+            console.log("already deployed:", expected);
+            continue;
+        }
+        console.log("deploying timelock to:", expected)
+        // Submit
         const populated = await factory
             .getFunction("deployTimelock")
             .populateTransaction(
-                config.timelocks[chain].token,
-                beneficiary,
-                config.timelocks[chain].admin,
-                cliffDuration,
-                startTime,
-                duration,
-                amount,
-                fundOnDeploy ? amount : 0n,
+                ...args
             );
 
         if (submit) {
@@ -103,11 +124,19 @@ const func: DeployFunction = async (
             // Save the deployment
             const parsed = receipt.logs.map((l: any) => factory.interface.parseLog(l));
             const [timelock] = parsed.find((p) => p?.name === "TimelockDeployed")?.args as any;
-            await hre.deployments.save(`Timelock-${beneficiary.toLowerCase()}`, {
+            await hre.deployments.save(`Timelock-${beneficiary.toLowerCase()}-${startTime}`, {
                 abi: (await hre.deployments.getArtifact("TimelockedDelegator")).abi,
                 address: timelock.toLowerCase(),
                 transactionHash: tx.hash,
                 receipt: receipt as any,
+                args: [
+                    config.timelocks[chain].token,
+                    beneficiary,
+                    config.timelocks[chain].admin,
+                    cliffDuration,
+                    startTime,
+                    duration,
+                ]
             });
         } else {
             // Write the tx to a json
