@@ -1,11 +1,18 @@
 # Compiler files
 cache/
 out/
+dist/
+
+# Depedencies
+node_modules/
 
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
+
+# Ignores safe logs
+/safe/
 
 # Docs
 docs/
@@ -15,3 +22,19 @@ docs/
 
 # Config files
 beneficiaries.json
+beneficiaries.csv
+beneficiaries-testnet.csv
+
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+# Hardhat files
+cache
+
+# Forge files
+artifacts
+broadcast
+cache_hardhat

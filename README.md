@@ -29,19 +29,19 @@ This repository requires:
 1. Install the dependencies:
 
 ```sh
-airdrop-contracts$ forge install
+airdrop-contracts$ yarn install
 ```
 
 2. Build the contracts:
 
 ```sh
-airdrop-contracts$ forge build
+airdrop-contracts$ yarn build
 ```
 
 2. Run the tests
 
 ```sh
-airdrop-contracts$ forge test
+airdrop-contracts$ yarn test
 ```
 
 ## Deployments
@@ -78,17 +78,15 @@ The script [`TimelockedDelegator.s.sol`](./script/TimelockedDelegator.s.sol) gov
 
 To deploy the timelocks:
 
-1. Generate a `beneficiaries.json`. See `beneficiaries.example.json` for a working example.
+1. Generate a `beneficiaries.csv`. See `beneficiaries.example.csv` for a working example. The headers should be:
 
-```json
-{
-  "beneficiary": "0x18EdaEc676341D63d7087D0d999cF1f1a56d565A", // address that can claim + delegate tokens
-  "amount": 10, // amount of tokens the beneficiary will vest (eth units)
-  "startTime": 1689554843, // the starting timestamp in seconds of the vesting
-  "cliffDuration": 300, // the duration of the cliff in seconds
-  "duration": 600 // the duration of the unlock/vesting period
-}
-```
+- `beneficiary`: Address that can claim funds
+- `amount`: Amount to lock (wei units)
+- `startTime`: The starting timestamp in seconds of the vesting
+- `cliffDuration`: The duration of the cliff in seconds
+- `duration`: The duration of the unlock/vesting period in seconds
+
+**NOTE:** On testnets, store the beneficiaries in `beneficiaries-testnet.csv`
 
 2. Copy the `.env.example`, and fill in with the appropriate values (only networks you are deploying to must be configured):
 
@@ -104,10 +102,18 @@ The deployer `PRIVATE_KEY` should hold funds on all the networks you plan on dep
 airdrop-contracts$ source .env
 ```
 
-4. Run the deployment script with the `broadcast` and `verify` flags for the appropriate network:
+4. Run the deployment script for the appropriate network:
 
 ```sh
-airdrop-contracts$ forge script script/TimelockedDelegator.s.sol:TimelockedDelegatorDeploy --verify -vvv --rpc-url $GOERLI_RPC_URL --sender $DEPLOYER --broadcast
+airdrop-contracts$ ETHERSCAN_API_KEY="<ETHERSCAN_API_KEY>" yarn hardhat deploy --network "<NETWORK>"
 ```
 
-5. Verify the correct information is added into the [`timelocks.json`](./timelocks.json) file.
+**NOTE:** To deploy the factory, but only generate the transactions needed to deploy and fund the transactions, add the following in your `.env`:
+
+```sh
+SUBMIT=false
+```
+
+This will write all of the transactions to a SAFE transaction-builder compliant `json` file, which can be uploaded to deploy timelocks directly from the SAFE application. These transactions will be written to a timestamped `transaction.json` file.
+
+5. Verify the correct information is exported to `deployments`. If using a SAFE to deploy, only the factory should be saved.

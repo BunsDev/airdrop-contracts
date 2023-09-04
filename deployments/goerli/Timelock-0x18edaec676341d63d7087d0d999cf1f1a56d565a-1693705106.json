@@ -1,0 +1,610 @@
+{
+  "address": "0x6e7761683e07b3226cbcb694cf1fe990e47c72ad",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_clawbackAdmin",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_cliffDuration",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_startTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_duration",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "BeneficiaryUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_delegatee",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Delegate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "oldDuration",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newDuration",
+          "type": "uint256"
+        }
+      ],
+      "name": "DurationUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_pendingBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "PendingBeneficiaryUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_beneficiary",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Release",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "startTime",
+          "type": "uint256"
+        }
+      ],
+      "name": "TimerReset",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_delegatee",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "Undelegate",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "acceptBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "alreadyReleasedAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "availableForRelease",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "beneficiary",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "clawback",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "clawbackAdmin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "cliffSeconds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "delegatee",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "delegate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "delegateAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "delegateContract",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "duration",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "initialBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "isTimeEnded",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "isTimeStarted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lockedToken",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "passedCliff",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pendingBeneficiary",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "release",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "releaseMax",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "remainingTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_pendingBeneficiary",
+          "type": "address"
+        }
+      ],
+      "name": "setPendingBeneficiary",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "startTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "timeSinceStart",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "token",
+      "outputs": [
+        {
+          "internalType": "contract IDelegatable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalDelegated",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalToken",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "delegatee",
+          "type": "address"
+        }
+      ],
+      "name": "undelegate",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x754ed8cdd22f09836aaaafefe823391c32daafb0f1b8f6d1fbf12029d59ce424",
+  "receipt": {
+    "to": "0x457F02d4Fe78DB5e48634006D27DE237d3638c66",
+    "from": "0xD2c6af522591ddCd5327fe3f628a44A2cfa3EC5D",
+    "contractAddress": null,
+    "gasUsed": "2616831",
+    "logsBloom": "0x00000000000000000000000000000000000020000000000000800000000000800020000040000000000010000800000000020000000000000000010000000000000000000800000000000000000000000000000000024000400000002000000000000000020000020000000000000802000000000010200000000000000002000000000000000000000000000000000200200000000000000000000000000000000000000000000000000000000000000000000000000000000080000000000000004000000800000000000000000000010000000000000002000000000024000000000000000000000200000000000000000000000000000000000000020000",
+    "blockHash": "0x8dbb43f61035a62048fbb75b1578cde8385347dc60e45b975338ab331b420e60",
+    "logs": [
+      {
+        "_type": "log",
+        "address": "0x6E7761683e07B3226CBcb694Cf1fe990E47c72Ad",
+        "blockHash": "0x8dbb43f61035a62048fbb75b1578cde8385347dc60e45b975338ab331b420e60",
+        "blockNumber": 9632913,
+        "data": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000258",
+        "index": 171,
+        "topics": [
+          "0x53356ce8408d6a56b0e61bcd41861e12eb5772987856f889e38e4aba4ffa104c"
+        ],
+        "transactionHash": "0x754ed8cdd22f09836aaaafefe823391c32daafb0f1b8f6d1fbf12029d59ce424",
+        "transactionIndex": 23
+      },
+      {
+        "_type": "log",
+        "address": "0x6E7761683e07B3226CBcb694Cf1fe990E47c72Ad",
+        "blockHash": "0x8dbb43f61035a62048fbb75b1578cde8385347dc60e45b975338ab331b420e60",
+        "blockNumber": 9632913,
+        "data": "0x0000000000000000000000000000000000000000000000000000000064f53888",
+        "index": 172,
+        "topics": [
+          "0xd1dbb2ce8081405078443ef34dae718285114121a39370b14ef01b9d2b0a2083"
+        ],
+        "transactionHash": "0x754ed8cdd22f09836aaaafefe823391c32daafb0f1b8f6d1fbf12029d59ce424",
+        "transactionIndex": 23
+      },
+      {
+        "_type": "log",
+        "address": "0xC15bAC780f7702E83d421955132d192c8841B13f",
+        "blockHash": "0x8dbb43f61035a62048fbb75b1578cde8385347dc60e45b975338ab331b420e60",
+        "blockNumber": 9632913,
+        "data": "0x",
+        "index": 173,
+        "topics": [
+          "0x3134e8a2e6d97e929a7e54011ea5485d7d196dd5f0ba4d4ef95803e8e3fc257f",
+          "0x0000000000000000000000006e7761683e07b3226cbcb694cf1fe990e47c72ad",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x00000000000000000000000018edaec676341d63d7087d0d999cf1f1a56d565a"
+        ],
+        "transactionHash": "0x754ed8cdd22f09836aaaafefe823391c32daafb0f1b8f6d1fbf12029d59ce424",
+        "transactionIndex": 23
+      },
+      {
+        "_type": "log",
+        "address": "0x457F02d4Fe78DB5e48634006D27DE237d3638c66",
+        "blockHash": "0x8dbb43f61035a62048fbb75b1578cde8385347dc60e45b975338ab331b420e60",
+        "blockNumber": 9632913,
+        "data": "0x000000000000000000000000a2ee8dcd2a8a3a54cf37f6590e5108bbe502b006000000000000000000000000000000000000000000000000000000000000012c0000000000000000000000000000000000000000000000000000000064f3e3920000000000000000000000000000000000000000000000000000000000000258",
+        "index": 174,
+        "topics": [
+          "0x9a4ba2c17e8c99abb007ba4c6db3e815dfd367929a65096d1c64477a8bdb0e9f",
+          "0x0000000000000000000000006e7761683e07b3226cbcb694cf1fe990e47c72ad",
+          "0x000000000000000000000000c15bac780f7702e83d421955132d192c8841b13f",
+          "0x00000000000000000000000018edaec676341d63d7087d0d999cf1f1a56d565a"
+        ],
+        "transactionHash": "0x754ed8cdd22f09836aaaafefe823391c32daafb0f1b8f6d1fbf12029d59ce424",
+        "transactionIndex": 23
+      }
+    ],
+    "blockNumber": 9632913,
+    "cumulativeGasUsed": "14056928",
+    "status": 1
+  },
+  "args": [
+    "0xC15bAC780f7702E83d421955132d192c8841B13f",
+    "0x18EdaEc676341D63d7087D0d999cF1f1a56d565A",
+    "0xa2Ee8DCd2A8A3A54Cf37F6590E5108BbE502B006",
+    "300",
+    "1693705106",
+    "600"
+  ],
+  "numDeployments": 1
+}
