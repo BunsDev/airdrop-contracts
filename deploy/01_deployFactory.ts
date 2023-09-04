@@ -14,13 +14,13 @@ const func: DeployFunction = async (
     [_deployer] = await hre.ethers.getUnnamedSigners();
   }
   const deployer = _deployer as unknown as Wallet;
+  console.log("deployer: ", deployer.address);
   console.log("\n============================= Deploying TimelockFactory Contract ===============================");
   const deployment = await hre.deployments.getOrNull("TimelockFactory");
   if (deployment) {
     console.log("factory already deployed:", deployment.address);
     return;
   }
-
 
   // Deploy factory
   console.log("deploying factory..");
@@ -36,7 +36,6 @@ const func: DeployFunction = async (
     throw new Error(`Factory address mismatch: ${address} != ${factoryDeployment.address}`);
   }
   console.log("factory deployed:", factoryDeployment.address);
-
 };
 func.tags = ["factory", "testnet", "mainnet"];
 export default func;
