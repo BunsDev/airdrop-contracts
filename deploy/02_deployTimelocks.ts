@@ -108,9 +108,7 @@ const func: DeployFunction = async (
         // Submit
         const populated = await factory
             .getFunction("deployTimelock")
-            .populateTransaction(
-                ...args
-            );
+            .populateTransaction(...args);
 
         if (submit) {
             const tx = await deployer.sendTransaction(populated);
@@ -145,10 +143,11 @@ const func: DeployFunction = async (
     }
 
     // Write file
-    writeFileSync(file, JSON.stringify(toSubmit, null, 2));
-    // Write latest
-    writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify(toSubmit, null, 2));
-
+    if (toSubmit.length > 0) {
+        writeFileSync(file, JSON.stringify(toSubmit, null, 2));
+        // Write latest
+        writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify(toSubmit, null, 2));
+    }
 };
 func.tags = ["timelocks", "testnet", "mainnet"];
 export default func;
