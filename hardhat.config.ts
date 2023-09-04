@@ -31,7 +31,19 @@ export function getRemappings() {
 }
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.19",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.19",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
+  },
   preprocess: {
     eachLine: (hre) => ({
       transform: (line: string) => {
