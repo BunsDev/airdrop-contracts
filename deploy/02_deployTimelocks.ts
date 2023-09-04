@@ -3,7 +3,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction, DeploymentsExtension } from "hardhat-deploy/types";
 import { config as dotenvConfig } from "dotenv";
 import { getConfig } from "./config";
-import { ERC20ABI, readBeneficiaries } from "./utils";
+import { ERC20ABI, readBeneficiaries, writeBeneficiariesWithTimelocks } from "./utils";
 
 dotenvConfig();
 
@@ -96,8 +96,10 @@ const func: DeployFunction = async (
         }
     }
 
-    // Deploy the factories
-    for (const { beneficiary, cliffDuration, duration, startTime, amount } of toDeploy) {
+    // Deploy the timelocks
+    const deployed = [];
+    for (const deploy of toDeploy) {
+        const { beneficiary, cliffDuration, duration, startTime, amount } = deploy;
         // Get args
         const args = [
             config.timelocks[chain].token,
@@ -119,6 +121,7 @@ const func: DeployFunction = async (
                 startTime,
                 amount
             );
+        deployed.push({ timelock: expected, ...deploy });
         if (await deployer.provider.getCode(expected) !== "0x") {
             console.log("already deployed:", expected);
             continue;
@@ -167,6 +170,10 @@ const func: DeployFunction = async (
         // Write latest
         writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify({ ...meta, transactions }, null, 2));
     }
+
+    // write a the beneficiary to timelock to a file
+    writeBeneficiariesWithTimelocks(`${dir}/beneficiaries-timelocks-latest.csv`, deployed)
+    writeBeneficiariesWithTimelocks(`${dir}/beneficiaries-timelocks-${Math.floor(date.getTime() / 1000)}.csv`, deployed)
 };
 func.tags = ["timelocks", "testnet", "mainnet"];
 export default func;

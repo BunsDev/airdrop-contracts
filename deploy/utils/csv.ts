@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 
 export type TimelockFileConfig = {
   beneficiary: string;
@@ -11,6 +11,22 @@ export type TimelockFileConfig = {
 export const readBeneficiaries = (file: string): TimelockFileConfig[] => {
   return readCsvSync<TimelockFileConfig>(file);
 };
+
+export const writeBeneficiariesWithTimelocks = (file: string, timelocks: (TimelockFileConfig & { timelock: string })[]): void => {
+  return writeCsvSync<(TimelockFileConfig & { timelock: string })>(file, timelocks);
+};
+
+// NOTE: does not support nested objects
+const writeCsvSync = <T extends object>(file: string, data: T[]): void => {
+  const keys = Object.keys(data[0]);
+  const headerLine = keys.join(',');
+  const lines = data.map((entry: any) => {
+    return keys.map(key => `"${entry[key]}"`).join(',');
+  })
+  const contents = [headerLine, ...lines].join('\n');
+  console.log("contents", contents)
+  writeFileSync(file, contents);
+}
 
 const readCsvSync = <T extends object>(file: string): T[] => {
   const contents = readFileSync(file, "utf8");
