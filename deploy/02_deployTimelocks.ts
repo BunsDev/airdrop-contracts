@@ -7,6 +7,14 @@ import { ERC20ABI, readBeneficiaries } from "./utils";
 
 dotenvConfig();
 
+type SafeTransaction = {
+    to: string;
+    value: string;
+    data: string;
+    contractMethod?: { inputs: { name: string, type: string }[] };
+    contractInputsValues?: Record<string, string>; // keys correspond to names in inputs
+}
+
 const date = new Date();
 const SAFE_PARENT_DIR = './safe';
 const SAFE_FILE_SUFFIX = `transactions-${Math.floor(date.getTime() / 1000)}.json`;
@@ -43,7 +51,18 @@ const func: DeployFunction = async (
         mkdirSync(dir);
     }
 
-    const toSubmit = [];
+    const meta = {
+        version: "1.0",
+        chainId: chain.toString(),
+        createdAt: Date.now(),
+        meta: {
+            name: `Timelock deploy ${date.getTime()}`,
+            description: "Deploy timelock contracts for NEXT unlocking.",
+            txBuilderVersion: "1.16.2",
+        }
+    }
+
+    const transactions: SafeTransaction[] = [];
 
     // Get the factory
     const factoryDeployment = await hre.deployments.getOrNull("TimelockFactory");
@@ -72,8 +91,8 @@ const func: DeployFunction = async (
             const receipt = await tx.wait();
             console.log("mined approve tx:", receipt?.hash);
         } else {
-            // Write the tx to a json
-            toSubmit.push({ to: populated.to, value: populated.value, data: populated.data })
+            // Write the tx
+            transactions.push({ to: populated.to, value: populated.value?.toString() ?? "0", data: populated.data })
         }
     }
 
@@ -138,15 +157,15 @@ const func: DeployFunction = async (
             });
         } else {
             // Write the tx to a json
-            toSubmit.push({ to: populated.to, value: populated.value, data: populated.data })
+            transactions.push({ to: populated.to, value: populated.value?.toString() ?? "0", data: populated.data })
         }
     }
 
     // Write file
-    if (toSubmit.length > 0) {
-        writeFileSync(file, JSON.stringify(toSubmit, null, 2));
+    if (transactions.length > 0) {
+        writeFileSync(file, JSON.stringify({ ...meta, transactions }, null, 2));
         // Write latest
-        writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify(toSubmit, null, 2));
+        writeFileSync(`${dir}/transactions-latest.json`, JSON.stringify({ ...meta, transactions }, null, 2));
     }
 };
 func.tags = ["timelocks", "testnet", "mainnet"];
